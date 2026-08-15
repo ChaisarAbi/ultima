@@ -168,12 +168,12 @@ class ServiceOrderController extends Controller
 
     public function updateStatus(Request $request, Service $service)
     {
-        // Only allow technicians assigned to this service OR manajer/office to update status
+        // Allow technicians (all) OR manajer/office to update status
         $user = auth()->user();
-        $isAssignedTechnician = $user->role === 'teknisi' && $service->technicians->contains($user->id);
+        $isTechnician = $user->role === 'teknisi';
         $isAdmin = in_array($user->role, ['manajer', 'office']);
         
-        if (!$isAssignedTechnician && !$isAdmin) {
+        if (!$isTechnician && !$isAdmin) {
             abort(403, 'Anda tidak memiliki izin untuk update status servis ini.');
         }
 
@@ -190,9 +190,8 @@ class ServiceOrderController extends Controller
 
         $service->update($data);
 
-        $actionText = $isAssignedTechnician 
-            ? 'Teknisi mengupdate status servis menjadi: ' . $validated['status']
-            : 'Mengupdate status servis menjadi: ' . $validated['status'];
+        $roleLabel = $isTechnician ? 'Teknisi' : ucfirst($user->role);
+        $actionText = $roleLabel . ' mengupdate status servis menjadi: ' . $validated['status'];
         
         ActivityLog::log('update_status', $actionText, $service, $old, $service->toArray());
 

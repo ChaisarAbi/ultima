@@ -84,8 +84,8 @@
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 
-                                {{-- Update Status Button (teknisi yang ditugaskan) --}}
-@if(in_array(auth()->user()->role, ['teknisi']) && $service->technicians->count() > 0)
+{{-- Update Status Button (teknisi - bisa update semua order) --}}
+@if(in_array(auth()->user()->role, ['teknisi']))
 <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#statusModal{{ $service->id }}" title="Update Status">
     <i class="bi bi-check2-circle"></i>
 </button>
@@ -108,7 +108,7 @@
                     </tr>
                     
 {{-- Modal Update Status untuk Teknisi --}}
-@if(in_array(auth()->user()->role, ['teknisi']) && $service->technicians->count() > 0)
+@if(in_array(auth()->user()->role, ['teknisi']))
 <tr>
     <td colspan="8">
         <div class="modal fade" id="statusModal{{ $service->id }}" tabindex="-1" aria-hidden="true">
