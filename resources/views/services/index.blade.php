@@ -31,9 +31,14 @@
                 <tbody>
                     @php
                         $typeLabels = ['body_repair' => 'Body Repair', 'engine' => 'Mesin', 'electrical' => 'Elektrikal'];
-                        // Standardize status colors for display (manajer/office see what teknisi sets)
                         $statusColors = ['pending' => 'warning', 'in_progress' => 'primary', 'progress' => 'primary', 'completed' => 'success', 'done' => 'success', 'cancelled' => 'danger'];
                         $statusLabels = ['pending' => 'Pending', 'in_progress' => 'On Progress', 'progress' => 'On Progress', 'completed' => 'Selesai', 'done' => 'Selesai', 'cancelled' => 'Dibatalkan'];
+                        $statusOptions = [
+                            'pending' => ['label' => '⏳ Pending', 'color' => 'warning'],
+                            'progress' => ['label' => '🔧 On Progress', 'color' => 'primary'],
+                            'done' => ['label' => '✅ Selesai', 'color' => 'success'],
+                            'cancelled' => ['label' => '❌ Dibatalkan', 'color' => 'danger']
+                        ];
                     @endphp
                     @forelse($services as $service)
                     <tr>
@@ -74,9 +79,19 @@
                         <td>Rp {{ number_format($service->total_cost ?? 0, 0, ',', '.') }}</td>
                         <td class="text-center">
                             <div class="d-flex gap-1 justify-content-center">
+                                {{-- Detail Button (semua role) --}}
                                 <a href="{{ route('services.show', $service) }}" class="btn btn-sm btn-outline-info" title="Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                
+                                {{-- Update Status Button (teknisi yang ditugaskan) --}}
+                                @if(in_array(auth()->user()->role, ['teknisi']) && $service->technicians->contains(auth()->id()))
+                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#statusModal{{ $service->id }}" title="Update Status">
+                                    <i class="bi bi-check2-circle"></i>
+                                </button>
+                                @endif
+                                
+                                {{-- Edit & Delete (manajer/office only) --}}
                                 @if(in_array(auth()->user()->role, ['manajer', 'office']))
                                 <a href="{{ route('services.edit', $service) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
@@ -91,6 +106,57 @@
                             </div>
                         </td>
                     </tr>
+                    
+                    {{-- Modal Update Status untuk Teknisi --}}
+                    @if(in_array(auth()->user()->role, ['teknisi']) && $service->technicians->contains(auth()->id()))
+                    <tr>
+                        <td colspan="8">
+                            <div class="modal fade" id="statusModal{{ $service->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <i class="bi bi-check2-circle me-2"></i>Update Status Servis
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form action="{{ route('services.update-status', $service) }}" method="POST">
+                                            @csrf @method('PATCH')
+                                            <div class="modal-body">
+                                                <div class="alert alert-info mb-3">
+                                                    <strong>Servis:</strong> {{ $service->vehicle_plate }}<br>
+                                                    <strong>Pelanggan:</strong> {{ $service->vehicle?->customer?->name ?? $service->customer_name }}<br>
+                                                    <strong>Status Saat Ini:</strong> {{ $statusLabels[$service->status] ?? $service->status }}
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Pilih Status Baru:</label>
+                                                    @foreach($statusOptions as $value => $option)
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="radio" name="status" value="{{ $value }}" id="status{{ $service->id }}{{ $value }}" {{ $service->status === $value ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="status{{ $service->id }}{{ $value }}">
+                                                            {{ $option['label'] }}
+                                                        </label>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                <div class="alert alert-warning mb-0">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    Status yang Anda update akan langsung terlihat di Dashboard Manajer/Office.
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-check-lg me-1"></i> Update Status
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endif
                     @empty
                     <tr>
                         <td colspan="8">
