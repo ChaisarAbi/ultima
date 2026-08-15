@@ -53,7 +53,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/prediction/generate', [PredictionController::class, 'generate'])->name('prediction.generate');
         Route::get('/api/prediction/latest', [PredictionController::class, 'getLatest']);
 
-        // Management User Routes (Manager & Office)
+        // Management User Routes (Manager & Office) - CRUD complete
+        // Added: index, create, store, edit, update, destroy (excluding show)
         Route::resource('management/users', ManagementUserController::class)->except(['show']);
         Route::get('management/users/{user}', [ManagementUserController::class, 'show'])->name('management.users.show');
         Route::get('management/users/{user}/reset-password', [ManagementUserController::class, 'resetPassword'])->name('management.users.resetPassword');
