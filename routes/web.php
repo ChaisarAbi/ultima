@@ -10,6 +10,7 @@ use App\Http\Controllers\SparePartController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\MonitoringController;
+use App\Http\Controllers\ManagementUserController;
 
 // Login Routes (no auth)
 Route::middleware('guest')->group(function () {
@@ -51,6 +52,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/prediction', [PredictionController::class, 'index'])->name('prediction');
         Route::post('/prediction/generate', [PredictionController::class, 'generate'])->name('prediction.generate');
         Route::get('/api/prediction/latest', [PredictionController::class, 'getLatest']);
+
+        // Management User Routes (Manager & Office)
+        Route::resource('management/users', ManagementUserController::class)->except(['show']);
+        Route::get('management/users/{user}', [ManagementUserController::class, 'show'])->name('management.users.show');
+        Route::get('management/users/{user}/reset-password', [ManagementUserController::class, 'resetPassword'])->name('management.users.resetPassword');
+        Route::put('management/users/{user}/password', [ManagementUserController::class, 'updatePassword'])->name('management.users.updatePassword');
     });
 
     // All roles (manajer, office, teknisi)

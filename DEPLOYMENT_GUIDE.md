@@ -1,7 +1,8 @@
 # Deployment Guide - BMW ULTIMA Monitoring System
 
 **Target OS:** Ubuntu 24.04 LTS  
-**Domain:** ultima.aventra.my.id
+**Domain:** ultima.aventra.my.id  
+**PHP Version:** 8.3 (Ubuntu 24.04 default)
 
 ---
 
@@ -79,35 +80,33 @@ apt install -y \
 
 ## 3. Install PHP & Extensions
 
-```bash
-# Add Ondrej PHP repository
-add-apt-repository ppa:ondrej/php -y
-apt update
+**Ubuntu 24.04 comes with PHP 8.3 by default.**
 
-# Install PHP 8.1 and extensions
-apt install -y php8.1 php8.1-fpm php8.1-cli php8.1-common \
-    php8.1-mysql php8.1-sqlite3 php8.1pgsql \
-    php8.1-curl php8.1-mbstring php8.1-xml \
-    php8.1-gd php8.1-zip php8.1-bcmath \
-    php8.1-intl php8.1-tokenizer php8.1-fileinfo \
-    php8.1-redis php8.1-opcache
+```bash
+# Install PHP 8.3 and extensions
+apt install -y php8.3 php8.3-fpm php8.3-cli php8.3-common \
+    php8.3-mysql php8.3-sqlite3 php8.3pgsql \
+    php8.3-curl php8.3-mbstring php8.3-xml \
+    php8.3-gd php8.3-zip php8.3-bcmath \
+    php8.3-intl php8.3-tokenizer php8.3-fileinfo \
+    php8.3-redis php8.3-opcache
 ```
 
 **Enable GD for image processing (required for logo):**
 ```bash
-apt install -y php8.1-gd
+apt install -y php8.3-gd
 ```
 
 Verify PHP version:
 ```bash
 php --version
-# Should show PHP 8.1.x
+# Should show PHP 8.3.x
 ```
 
 Configure PHP-FPM:
 ```bash
-# Edit PHP configuration
-nano /etc/php/8.1/fpm/php.ini
+# Edit PHP configuration (for PHP 8.3)
+nano /etc/php/8.3/fpm/php.ini
 ```
 
 Ensure these settings:
@@ -123,8 +122,8 @@ log_errors = On
 
 Restart PHP-FPM:
 ```bash
-systemctl restart php8.1-fpm
-systemctl enable php8.1-fpm
+systemctl restart php8.3-fpm
+systemctl enable php8.3-fpm
 ```
 
 ---
@@ -221,16 +220,16 @@ git checkout main
 
 ## 9. PHP Configuration
 
-Set PHP CLI version to 8.1:
+**If you have multiple PHP versions installed, set CLI to 8.3:**
 ```bash
-update-alternatives --set php /usr/bin/php8.1
-update-alternatives --set phpcfgconifg /usr/bin/php-config8.1
-update-alternatives --set phpize /usr/bin/phpize8.1
+update-alternatives --set php /usr/bin/php8.3
+update-alternatives --set php-config /usr/bin/php-config8.3
+update-alternatives --set phpize /usr/bin/phpize8.3
 ```
 
 Verify:
 ```bash
-php --version  # Should show PHP 8.1.x
+php --version  # Should show PHP 8.3.x
 ```
 
 ---
@@ -393,7 +392,7 @@ server {
     # PHP-FPM processing
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
@@ -616,14 +615,16 @@ curl -I https://ultima.aventra.my.id
 
 ### Issue: 502 Bad Gateway
 ```bash
-# Check if PHP-FPM is running
+# Check if PHP-FPM is running (use your PHP version)
+systemctl status php8.3-fpm
+# or
 systemctl status php8.1-fpm
 
 # Check Nginx error log
 tail -f /var/log/nginx/error.log
 
 # Check PHP-FPM log
-tail -f /var/log/php8.1-fpm.log
+tail -f /var/log/php8.3-fpm.log
 ```
 
 ### Issue: Permission denied

@@ -569,6 +569,11 @@
                     <i class="bi bi-file-earmark-bar-graph"></i> Laporan
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('management.users.index') }}" class="nav-link {{ request()->routeIs('management.users.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-badge"></i> Manajemen User
+                </a>
+            </li>
             @endcan
         </ul>
 
