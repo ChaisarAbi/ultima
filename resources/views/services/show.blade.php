@@ -6,8 +6,15 @@
 <div class="page-actions">
     <h5><i class="bi bi-tools me-2"></i>Detail Servis</h5>
     <div class="d-flex gap-2">
-        @if(auth()->user()->role === 'manager')
-        <a href="{{ route('services.edit', $service) }}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i> Edit</a>
+        {{-- Status Update for Technicians --}}
+        @if(in_array(auth()->user()->role, ['teknisi']) && $service->technicians->contains(auth()->id()))
+        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal">
+            <i class="bi bi-check2-circle"></i> Update Status
+        </button>
+        @endif
+        
+        @if(in_array(auth()->user()->role, ['manajer', 'office']))
+        <a href="{{ route('services.edit', $service) }}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i> Edit</a>
         @endif
         <a href="{{ route('services.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Kembali</a>
     </div>
@@ -109,4 +116,49 @@
         </div>
     </div>
 </div>
+
+{{-- Technician Status Update Modal --}}
+@if(in_array(auth()->user()->role, ['teknisi']) && $service->technicians->contains(auth()->id()))
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">
+                    <i class="bi bi-check2-circle me-2"></i>Update Status Servis
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('services.update-status', $service) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body">
+                    <p class="mb-2"><strong>Servis:</strong> {{ $service->vehicle_plate }} - {{ $typeLabels[$service->type] ?? $service->type }}</p>
+                    <p class="mb-2"><strong>Pelanggan:</strong> {{ $service->vehicle?->customer?->name ?? $service->customer_name }}</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ubah Status:</label>
+                        <select name="status" class="form-select" required>
+                            <option value="pending" {{ $service->status === 'pending' ? 'selected' : '' }}>⏳ Pending - Menunggu pengerjaan</option>
+                            <option value="progress" {{ $service->status === 'progress' ? 'selected' : '' }}>🔧 On Progress - Sedang dikerjakan</option>
+                            <option value="done" {{ $service->status === 'done' ? 'selected' : '' }}>✅ Selesai - Pengerjaan selesai</option>
+                            <option value="cancelled" {{ $service->status === 'cancelled' ? 'selected' : '' }}>❌ Dibatalkan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Status yang Anda update akan langsung terlihat di Dashboard Manajer/Office.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-check-lg me-1"></i> Update Status
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
