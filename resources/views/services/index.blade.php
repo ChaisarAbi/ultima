@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-actions">
     <h5><i class="bi bi-tools me-2"></i>Daftar Servis</h5>
-    @if(auth()->user()->role === 'manager')
+    @if(in_array(auth()->user()->role, ['manajer', 'office']))
     <a href="{{ route('services.create') }}" class="btn btn-primary btn-sm">
         <i class="bi bi-plus-lg"></i> Tambah Servis
     </a>
@@ -29,6 +29,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $typeLabels = ['body_repair' => 'Body Repair', 'engine' => 'Mesin', 'electrical' => 'Elektrikal'];
+                        // Standardize status colors for display (manajer/office see what teknisi sets)
+                        $statusColors = ['pending' => 'warning', 'in_progress' => 'primary', 'progress' => 'primary', 'completed' => 'success', 'done' => 'success', 'cancelled' => 'danger'];
+                        $statusLabels = ['pending' => 'Pending', 'in_progress' => 'On Progress', 'progress' => 'On Progress', 'completed' => 'Selesai', 'done' => 'Selesai', 'cancelled' => 'Dibatalkan'];
+                    @endphp
                     @forelse($services as $service)
                     <tr>
                         <td>{{ $loop->iteration + ($services->currentPage() - 1) * $services->perPage() }}</td>
@@ -49,16 +55,9 @@
                             @endif
                         </td>
                         <td>
-                            @php
-                                $typeLabels = ['body_repair' => 'Body Repair', 'engine' => 'Mesin', 'electrical' => 'Elektrikal'];
-                            @endphp
                             {{ $typeLabels[$service->type] ?? $service->type }}
                         </td>
                         <td>
-                            @php
-                                $statusColors = ['pending' => 'warning', 'progress' => 'primary', 'done' => 'success', 'cancelled' => 'danger'];
-                                $statusLabels = ['pending' => 'Pending', 'progress' => 'Proses', 'done' => 'Selesai', 'cancelled' => 'Dibatalkan'];
-                            @endphp
                             <span class="badge bg-{{ $statusColors[$service->status] ?? 'secondary' }}">
                                 {{ $statusLabels[$service->status] ?? $service->status }}
                             </span>
@@ -69,7 +68,7 @@
                                     <span class="badge bg-info">{{ $tech->name }}</span>
                                 @endforeach
                             @else
-                                <span class="text-muted">—</span>
+                                <span class="text-muted">Belum ditugaskan</span>
                             @endif
                         </td>
                         <td>Rp {{ number_format($service->total_cost ?? 0, 0, ',', '.') }}</td>
@@ -78,7 +77,7 @@
                                 <a href="{{ route('services.show', $service) }}" class="btn btn-sm btn-outline-info" title="Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                @if(auth()->user()->role === 'manager')
+                                @if(in_array(auth()->user()->role, ['manajer', 'office']))
                                 <a href="{{ route('services.edit', $service) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>

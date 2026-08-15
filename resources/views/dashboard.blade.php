@@ -109,10 +109,10 @@
         <div class="chart-card">
             <h3>📊 Status Servis</h3>
             <div class="status-list">
-                <div class="status-item"><span class="status-dot dot-pending"></span> Pending: <strong>{{ $servicesByStatus['pending'] }}</strong></div>
-                <div class="status-item"><span class="status-dot dot-progress"></span> Progress: <strong>{{ $servicesByStatus['in_progress'] }}</strong></div>
-                <div class="status-item"><span class="status-dot dot-done"></span> Selesai: <strong>{{ $servicesByStatus['completed'] }}</strong></div>
-                <div class="status-item"><span class="status-dot dot-cancelled"></span> Cancelled: <strong>{{ $servicesByStatus['cancelled'] }}</strong></div>
+        <div class="status-item"><span class="status-dot dot-pending"></span> Pending: <strong>{{ $servicesByStatus['pending'] }}</strong></div>
+        <div class="status-item"><span class="status-dot dot-progress"></span> On Progress: <strong>{{ $servicesByStatus['in_progress'] }}</strong></div>
+        <div class="status-item"><span class="status-dot dot-done"></span> Selesai: <strong>{{ $servicesByStatus['completed'] }}</strong></div>
+        <div class="status-item"><span class="status-dot dot-cancelled"></span> Dibatalkan: <strong>{{ $servicesByStatus['cancelled'] }}</strong></div>
             </div>
             <div class="chart-container chart-container-sm" style="max-width:260px;margin:0 auto;">
                 <canvas id="statusPieChart"></canvas>
@@ -292,7 +292,7 @@ const statusData = @json($servicesByStatus);
 new Chart(document.getElementById('statusPieChart'), {
     type: 'doughnut',
     data: {
-        labels: ['Pending', 'Progress', 'Selesai', 'Cancelled'],
+        labels: ['Pending', 'On Progress', 'Selesai', 'Dibatalkan'],
         datasets: [{
             data: [statusData.pending, statusData.in_progress, statusData.completed, statusData.cancelled],
             backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'],

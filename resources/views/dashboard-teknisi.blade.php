@@ -17,7 +17,7 @@
     </div>
     <div class="col-md-4">
         <div class="stat-card">
-            <div class="stat-label">Sedang Dikerjakan</div>
+            <div class="stat-label">On Progress</div>
             <div class="stat-value text-warning">{{ $pendingServices }}</div>
         </div>
     </div>
@@ -29,8 +29,11 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header"><i class="bi bi-list-check me-2"></i>Servis Saya</div>
+<div class="card mt-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Servis Saya</h5>
+        <small class="text-muted">Status sinkron dengan Dashboard Manajer/Office</small>
+    </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -47,8 +50,9 @@
                 <tbody>
                     @php
                         $typeLabels = ['body_repair' => 'Body Repair', 'engine' => 'Mesin', 'electrical' => 'Elektrikal'];
+                        // Standardize status: database uses pending/progress/done/cancelled
                         $statusColors = ['pending' => 'warning', 'progress' => 'primary', 'done' => 'success', 'cancelled' => 'danger'];
-                        $statusLabels = ['pending' => 'Pending', 'progress' => 'Proses', 'done' => 'Selesai', 'cancelled' => 'Dibatalkan'];
+                        $statusLabels = ['pending' => 'Pending', 'progress' => 'On Progress', 'done' => 'Selesai', 'cancelled' => 'Dibatalkan'];
                     @endphp
                     @forelse($assignedServices as $service)
                     <tr>
@@ -80,6 +84,15 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+
+{{-- Info Box --}}
+<div class="alert alert-info mt-3 d-flex align-items-center">
+    <i class="bi bi-info-circle me-2 fs-4"></i>
+    <div>
+        <strong>Info:</strong> Status servis yang Anda update akan langsung terlihat di Dashboard Manajer/Office.
+        Pastikan untuk mengubah status menjadi "Selesai" setelah pengerjaan selesai.
     </div>
 </div>
 @endsection
