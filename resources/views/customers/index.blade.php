@@ -92,4 +92,79 @@
     </div>
     @endif
 </div>
+
+{{-- Quick Add Customer Modal --}}
+<div class="modal fade" id="quickAddCustomerModal" tabindex="-1" aria-labelledby="quickAddCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickAddCustomerModalLabel"><i class="bi bi-person-plus me-2"></i>Tambah Pelanggan Cepat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="quickAddCustomerForm">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="quickName" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="quickName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickPhone" class="form-label">No. Telepon <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="quickPhone" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="quickEmail" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickAddress" class="form-label">Alamat</label>
+                        <textarea class="form-control" id="quickAddress" name="address" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Simpan & Refresh</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+// Quick Add Customer Form Submission
+document.getElementById('quickAddCustomerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const modal = new bootstrap.Modal(document.getElementById('quickAddCustomerModal'));
+    
+    fetch('{{ route("customers.store") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.id) {
+            // Close modal
+            modal.hide();
+            
+            // Reset form
+            this.reset();
+            
+            // Refresh page to show new customer
+            window.location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
+    });
+});
+</script>
+@endpush
 @endsection
