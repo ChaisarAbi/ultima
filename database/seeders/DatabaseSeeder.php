@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         // First seed the basic data (users, initial customers, etc.)
         $this->call(BigDatabaseSeeder::class);
+        
+        // Seed default service types
+        $this->call(ServiceTypeSeeder::class);
     }
 }

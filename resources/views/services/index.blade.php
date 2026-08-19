@@ -12,6 +12,33 @@
     @endif
 </div>
 
+<div class="card mb-3">
+    <div class="card-body">
+        <form action="{{ route('services.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Cari pelanggan atau plat nomor..." value="{{ request('search') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">Semua Status</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="progress" {{ request('status') == 'progress' ? 'selected' : '' }}>On Progress</option>
+                    <option value="done" {{ request('status') == 'done' ? 'selected' : '' }}>Selesai</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
+                </select>
+            </div>
+            <div class="col-md-5 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Cari
+                </button>
+                <a href="{{ route('services.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-1"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">

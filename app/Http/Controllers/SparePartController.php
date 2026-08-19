@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 
 class SparePartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $spareParts = SparePart::latest()->paginate(10);
+        $query = SparePart::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('part_number', 'like', "%{$search}%");
+            });
+        }
+
+        $spareParts = $query->latest()->paginate(10);
         return view('spare-parts.index', compact('spareParts'));
     }
 

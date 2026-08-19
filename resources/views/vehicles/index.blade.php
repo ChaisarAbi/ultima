@@ -10,6 +10,24 @@
     </a>
 </div>
 
+<div class="card mb-3">
+    <div class="card-body">
+        <form action="{{ route('vehicles.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-8">
+                <input type="text" name="search" class="form-control" placeholder="Cari plat nomor, merek, model, atau pemilik..." value="{{ request('search') }}">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Cari
+                </button>
+                <a href="{{ route('vehicles.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-1"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -78,5 +96,42 @@
         {{ $vehicles->links() }}
     </div>
     @endif
+</div>
+
+<!-- Modal Quick Add Customer -->
+<div class="modal fade" id="quickAddCustomerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-person-plus me-2"></i>Tambah Pelanggan Baru
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('customers.store') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">No. Telepon <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" class="form-control" placeholder="Contoh: 08123456789" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Alamat</label>
+                        <textarea name="address" class="form-control" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-check-lg me-1"></i> Simpan & Lanjutkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection

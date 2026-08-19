@@ -382,7 +382,7 @@
             .content-area { padding: 1rem; }
         }
 
-        /* ===== PREDICTION / CHART extras (from dashboard) ===== */
+        /* ===== PREDICTION / CHART extras ===== */
         .chart-card {
             background: #fff;
             border-radius: var(--radius);
@@ -486,7 +486,7 @@
             text-align: center;
         }
 
-        /* ===== LOGO WATERMARK (semua halaman) ===== */
+        /* ===== LOGO WATERMARK ===== */
         .app-watermark {
             position: fixed;
             top: 50%;
@@ -516,7 +516,6 @@
     <aside class="sidebar" id="sidebar">
         <div class="brand">
             <img src="{{ asset('logo.webp') }}" alt="Logo">
-            
             <span>BMW ULTIMA</span>
         </div>
         <div class="divider"></div>
@@ -543,6 +542,11 @@
             <li class="nav-item">
                 <a href="{{ route('spare-parts.index') }}" class="nav-link {{ request()->routeIs('spare-parts.*') ? 'active' : '' }}">
                     <i class="bi bi-box-seam"></i> Spare Part
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('service-types.index') }}" class="nav-link {{ request()->routeIs('service-types.*') ? 'active' : '' }}">
+                    <i class="bi bi-tags"></i> Type Servis
                 </a>
             </li>
             @endcan

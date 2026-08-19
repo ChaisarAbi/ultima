@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ServiceOrderController;
+use App\Http\Controllers\ServiceTypeController;
 use App\Http\Controllers\SparePartController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PredictionController;
@@ -94,4 +95,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/services/{service}/edit', [ServiceOrderController::class, 'edit'])->name('services.edit');
     Route::put('/services/{service}', [ServiceOrderController::class, 'update'])->name('services.update');
     Route::delete('/services/{service}', [ServiceOrderController::class, 'destroy'])->name('services.destroy');
+
+    // Manajer & Office only - Service Types CRUD
+    Route::get('/service-types', [ServiceTypeController::class, 'index'])->name('service-types.index');
+    Route::post('/service-types', [ServiceTypeController::class, 'store'])->name('service-types.store');
+    Route::get('/service-types/create', [ServiceTypeController::class, 'create'])->name('service-types.create');
+    Route::get('/service-types/{serviceType}', [ServiceTypeController::class, 'show'])->name('service-types.show');
+    Route::get('/service-types/{serviceType}/edit', [ServiceTypeController::class, 'edit'])->name('service-types.edit');
+    Route::put('/service-types/{serviceType}', [ServiceTypeController::class, 'update'])->name('service-types.update');
+    Route::delete('/service-types/{serviceType}', [ServiceTypeController::class, 'destroy'])->name('service-types.destroy');
 });

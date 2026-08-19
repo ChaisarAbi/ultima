@@ -5,12 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use App\Models\Vehicle;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::withCount('vehicles')->latest()->paginate(10);
+        $query = Customer::withCount('vehicles');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
+            });
+        }
+
+        $customers = $query->latest()->paginate(10);
         return view('customers.index', compact('customers'));
     }
 
@@ -24,12 +36,24 @@ class CustomerController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
             'address' => 'nullable|string',
         ]);
 
         $customer = Customer::create($validated);
 
         ActivityLog::log('create', 'Menambahkan pelanggan baru: ' . $customer->name, $customer);
+
+        // Return JSON for AJAX requests
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'phone' => $customer->phone,
+                'email' => $customer->email,
+                'address' => $customer->address,
+            ]);
+        }
 
         return redirect()->route('customers.index')
             ->with('success', 'Pelanggan berhasil ditambahkan.');

@@ -5,11 +5,29 @@
 @section('content')
 <div class="page-actions">
     <h5><i class="bi bi-box me-2"></i>Daftar Spare Part</h5>
-    @if(auth()->user()->role === 'manager')
+    @if(in_array(auth()->user()->role, ['manajer', 'office']))
     <a href="{{ route('spare-parts.create') }}" class="btn btn-primary btn-sm">
         <i class="bi bi-plus-lg"></i> Tambah Spare Part
     </a>
     @endif
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form action="{{ route('spare-parts.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-8">
+                <input type="text" name="search" class="form-control" placeholder="Cari nama spare part atau part number..." value="{{ request('search') }}">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Cari
+                </button>
+                <a href="{{ route('spare-parts.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-1"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="card">

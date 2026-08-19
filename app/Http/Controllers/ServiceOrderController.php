@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Models\Vehicle;
 use App\Models\User;
-use App\Models\ServiceOrder;
 use App\Models\SparePart;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;

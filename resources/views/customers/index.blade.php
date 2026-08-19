@@ -5,9 +5,32 @@
 @section('content')
 <div class="page-actions">
     <h5><i class="bi bi-people me-2"></i>Daftar Pelanggan</h5>
-    <a href="{{ route('customers.create') }}" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-lg"></i> Tambah Pelanggan
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('customers.create') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> Tambah Pelanggan
+        </a>
+        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#quickAddCustomerModal">
+            <i class="bi bi-person-plus"></i> Quick Add
+        </button>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form action="{{ route('customers.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-8">
+                <input type="text" name="search" class="form-control" placeholder="Cari nama, no. telepon, atau alamat..." value="{{ request('search') }}">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Cari
+                </button>
+                <a href="{{ route('customers.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-1"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="card">
